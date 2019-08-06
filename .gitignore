@@ -19,8 +19,8 @@
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
-example/dart/secrets.dart
-example/flutter/secrets.dart
+#example/dart/secrets.dart
+#example/flutter/secrets.dart
 
 # Flutter/Dart/Pub related
 **/doc/api/
