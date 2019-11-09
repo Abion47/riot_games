@@ -1,3 +1,6 @@
+example/dart/secrets.dart
+example/dart/output/
+
 # Miscellaneous
 *.class
 *.log
@@ -21,7 +24,6 @@
 .vscode/
 .idea/
 .dart_tool/
-example/dart/output/
 
 # Flutter/Dart/Pub related
 **/doc/api/
