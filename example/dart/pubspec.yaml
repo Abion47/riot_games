@@ -1,0 +1,5 @@
+name: dart_example
+
+dependencies:
+  riot_games:
+    path: ../..

@@ -4,6 +4,8 @@ A new Flutter package project.
 
 ## Getting Started
 
+The structure and functionality of this plugin is based on the official [Riot Games API](https://developer.riotgames.com/apis). For detailed documentation on each API endpoint, check there.
+
 This project is a starting point for a Dart
 [package](https://flutter.dev/developing-packages/),
 a library module containing code that can be shared easily across

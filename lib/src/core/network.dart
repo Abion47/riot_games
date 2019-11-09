@@ -2,30 +2,59 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+class NetworkHandler {
+  static Map<String, String> _getDefaultHeaders(String apiKey) => {
+        'Accept-Charset': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Riot-Token': apiKey,
+        'Accept-Language': 'en-US,en;q=0.9',
+      };
+
+  static Future<Response> sendHttpRequest(
+    http.Client client,
+    String apiKey,
+    Uri endpoint,
+    String method, {
+    Map<String, String> headers,
+    Map<String, dynamic> body,
+    ResponseType responseType,
+  }) async {
+    http.Response httpResponse;
+
+    var allHeaders = {
+      ..._getDefaultHeaders(apiKey),
+      ...(headers ?? {}),
+    };
+
+    try {
+      switch (method) {
+        case 'GET':
+          httpResponse = await client.get(endpoint, headers: allHeaders);
+          break;
+        case 'POST':
+          httpResponse =
+              await client.post(endpoint, headers: allHeaders, body: body);
+          break;
+        case 'PUT':
+          httpResponse =
+              await client.put(endpoint, headers: allHeaders, body: body);
+          break;
+        default:
+          throw UnsupportedError('Method unsupported: $method');
+      }
+    } catch (e) {
+      return Response.noConnection();
+    } finally {
+      client.close();
+    }
+
+    return Response.fromHttpResponse(httpResponse, responseType);
+  }
+}
+
 enum ResponseType {
   binary,
   text,
   json,
-}
-
-Future<Response> sendHttpRequest(String endpoint, String method,
-    {Map<String, String> headers,
-    Map<String, dynamic> body,
-    ResponseType responseType}) async {
-  http.Response httpResponse;
-
-  switch (method) {
-    case 'GET':
-      httpResponse = await http.get(endpoint, headers: headers);
-      break;
-    case 'POST':
-      httpResponse = await http.post(endpoint, headers: headers, body: body);
-      break;
-    default:
-      throw UnsupportedError('Method unsupported: $method');
-  }
-
-  return Response.fromHttpResponse(httpResponse, responseType);
 }
 
 class Response {
@@ -34,6 +63,8 @@ class Response {
   final dynamic body;
 
   Response(this.code, this.headers, this.body);
+
+  factory Response.noConnection() => Response(0, {}, {});
 
   factory Response.fromHttpResponse(
       http.Response response, ResponseType responseType) {
@@ -46,7 +77,7 @@ class Response {
     dynamic body;
     if (responseType != null) {
       body = contentType.contains('application/json')
-          ? jsonDecode(response.body)
+          ? json.decode(response.body)
           : response.bodyBytes;
     } else {
       switch (responseType) {
@@ -57,7 +88,8 @@ class Response {
           body = response.body;
           break;
         case ResponseType.json:
-          body = jsonDecode(response.body);
+        default:
+          body = json.decode(response.body);
           break;
       }
     }
@@ -67,6 +99,9 @@ class Response {
 
   ResponseError toError() {
     switch (code) {
+      case 0:
+        return ResponseError(this,
+            '(0) HTTP Request failed. Check your internet connection and try again.');
       case 400:
         return ResponseError(this,
             '(400) Bad request. Check your request URL and parameters and try again.');
@@ -96,6 +131,9 @@ class Response {
             '($code) The API returned a status code this package has not implemented an error message for. Consult the Riot API documentation for further information.');
     }
   }
+
+  @override
+  String toString() => 'code: $code, headers: $headers, body: $body';
 }
 
 class ResponseError extends StateError {
