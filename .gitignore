@@ -1,4 +1,3 @@
-examples/dart/secrets.dart
 test/fixtures/*
 !test/fixtures/fixture_helper.dart
 
