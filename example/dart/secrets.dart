@@ -1,3 +1,7 @@
 class Secrets {
-  static const ApiKey = ''; /* Insert your API Key here */
+  static const apiKey = '';
+  static const summonerId = '';
+  static const summonerName = '';
+  static const accountId = '';
+  static const summonerPuuid = '';
 }
