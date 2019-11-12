@@ -1,12 +1,28 @@
-import 'package:http/http.dart' as http;
-
 import '../../../api_key_store.dart';
+import '../../../core/endpoint.dart';
+import '../../../core/network.dart';
 import '../../model/league_entry_dto.dart';
 import '../../model/league_list_dto.dart';
+import '../../typedefs.dart';
 import '../league_v4.dart';
 
+Endpoint get _LeagueV4_getChallengerLeaguesInQueue =>
+    Endpoint('/lol/league/v4/challengerleagues/by-queue/{queue}')..initialize();
+Endpoint get _LeagueV4_getEntriesForSummoner =>
+    Endpoint('/lol/league/v4/entries/by-summoner/{encryptedSummonerId}')
+      ..initialize();
+Endpoint get _LeagueV4_getEntriesInQueueTierDivision =>
+    Endpoint('/lol/league/v4/entries/{queue}/{tier}/{division}')..initialize();
+Endpoint get _LeagueV4_getGrandmasterLeaguesInQueue =>
+    Endpoint('/lol/league/v4/grandmasterleagues/by-queue/{queue}')
+      ..initialize();
+Endpoint get _LeagueV4_getLeagueById =>
+    Endpoint('/lol/league/v4/leagues/{leagueId}')..initialize();
+Endpoint get _LeagueV4_getMasterLeaguesInQueue =>
+    Endpoint('/lol/league/v4/masterleagues/by-queue/{queue}')..initialize();
+
 class LeagueV4Impl extends LeagueV4 {
-  final http.Client Function() clientGenerator;
+  final ClientGenerator clientGenerator;
   final ApiKeyStore apiKeyStore;
 
   LeagueV4Impl({
@@ -15,40 +31,136 @@ class LeagueV4Impl extends LeagueV4 {
   });
 
   @override
-  Future<LeagueListDTO> getChallengerLeaguesByQueue({String queue}) {
-    // TODO: implement getChallengerLeaguesByQueue
-    return null;
+  Future<LeagueListDTO> getChallengerLeaguesInQueue(String queue) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getChallengerLeaguesInQueue..['queue'] = queue;
+
+    final url = endpoint.build();
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return LeagueListDTO.fromJson(response.body);
+    }
+
+    throw response.toError();
   }
 
   @override
-  Future<List<LeagueEntryDTO>> getEntriesByQueueTierDivision(
-      {String division, String tier, String queue, int page = 1}) {
-    // TODO: implement getEntriesByQueueTierDivision
-    return null;
+  Future<Set<LeagueEntryDTO>> getEntriesForSummoner(
+      String encryptedSummonerId) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getEntriesForSummoner
+      ..['encryptedSummonerId'] = encryptedSummonerId;
+
+    final url = endpoint.build();
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return response.body
+          .map<LeagueEntryDTO>((dto) => LeagueEntryDTO.fromJson(dto))
+          .toSet();
+    }
+
+    throw response.toError();
   }
 
   @override
-  Future<List<LeagueEntryDTO>> getEntriesBySummoner(
-      {String encryptedSummonerId}) {
-    // TODO: implement getEntriesBySummoner
-    return null;
+  Future<Set<LeagueEntryDTO>> getEntriesInQueueTierDivision(
+    String division,
+    String tier,
+    String queue, {
+    int page = 1,
+  }) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getEntriesInQueueTierDivision
+      ..['queue'] = queue
+      ..['tier'] = tier
+      ..['division'] = division;
+
+    final url = endpoint.build({'page': page});
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return response.body
+          .map<LeagueEntryDTO>((fix) => LeagueEntryDTO.fromJson(fix))
+          .toSet();
+    }
+
+    throw response.toError();
   }
 
   @override
-  Future<LeagueListDTO> getGrandmasterLeaguesByQueue({String queue}) {
-    // TODO: implement getGrandmasterLeaguesByQueue
-    return null;
+  Future<LeagueListDTO> getGrandmasterLeaguesInQueue(String queue) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getGrandmasterLeaguesInQueue..['queue'] = queue;
+
+    final url = endpoint.build();
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return LeagueListDTO.fromJson(response.body);
+    }
+
+    throw response.toError();
   }
 
   @override
-  Future<LeagueListDTO> getLeagueById({String leagueId}) {
-    // TODO: implement getLeagueById
-    return null;
+  Future<LeagueListDTO> getLeagueById(String leagueId) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getLeagueById..['leagueId'] = leagueId;
+
+    final url = endpoint.build();
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return LeagueListDTO.fromJson(response.body);
+    }
+
+    throw response.toError();
   }
 
   @override
-  Future<LeagueListDTO> getMasterLeaguesByQueue({String queue}) {
-    // TODO: implement getMasterLeaguesByQueue
-    return null;
+  Future<LeagueListDTO> getMasterLeaguesInQueue(String queue) async {
+    apiKeyStore.checkApiKey();
+
+    final endpoint = _LeagueV4_getMasterLeaguesInQueue..['queue'] = queue;
+
+    final url = endpoint.build();
+
+    final client = clientGenerator();
+    final response = await NetworkHandler.sendHttpRequest(
+        client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
+
+    if (response.code == 200) {
+      return LeagueListDTO.fromJson(response.body);
+    }
+
+    throw response.toError();
   }
 }

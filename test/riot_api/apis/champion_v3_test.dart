@@ -14,7 +14,7 @@ class MockHttpClient extends Mock implements http.Client {}
 class MockApiKeyStore extends Mock implements ApiKeyStore {}
 
 void main() {
-  ChampionV3Impl summonerV4Impl;
+  ChampionV3Impl championV3Impl;
   MockHttpClient mockHttpClient;
   MockApiKeyStore mockApiKeyStore;
 
@@ -23,7 +23,7 @@ void main() {
   setUp(() {
     mockHttpClient = MockHttpClient();
     mockApiKeyStore = MockApiKeyStore();
-    summonerV4Impl = ChampionV3Impl(
+    championV3Impl = ChampionV3Impl(
       clientGenerator: clientGenerator,
       apiKeyStore: mockApiKeyStore,
     );
@@ -52,7 +52,7 @@ void main() {
       setUpMockApiKeyStore();
       setUpMockHttpClientSuccess(championInfoString);
       // Act
-      final result = await summonerV4Impl.getChampionRotations();
+      final result = await championV3Impl.getChampionRotations();
       // Assert
       expect(result, championInfo);
     });
@@ -62,7 +62,7 @@ void main() {
       setUpMockApiKeyStore();
       setUpMockHttpClientFailure(0);
       // Act
-      final call = summonerV4Impl.getChampionRotations;
+      final call = championV3Impl.getChampionRotations;
       // Assert
       expectLater(call(), throwsA(TypeMatcher<ResponseError>()));
     });
@@ -72,7 +72,7 @@ void main() {
       setUpMockApiKeyStore();
       setUpMockHttpClientFailure(400);
       // Act
-      final call = summonerV4Impl.getChampionRotations;
+      final call = championV3Impl.getChampionRotations;
       // Assert
       expectLater(call(), throwsA(TypeMatcher<ResponseError>()));
     });

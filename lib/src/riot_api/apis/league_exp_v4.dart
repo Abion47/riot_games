@@ -1,12 +1,10 @@
-import 'package:meta/meta.dart';
-
-import '../model/league_entry_dto.dart';
+import '../model/league_entry_exp_dto.dart';
 
 abstract class LeagueExpV4 {
-  List<LeagueEntryDTO> getEntriesByQueueTierDivision({
-    @required String queue,
-    @required String tier,
-    @required String division,
+  Future<Set<LeagueEntryExpDTO>> getEntriesInQueueTierDivision(
+    String queue,
+    String tier,
+    String division, {
     int page = 1,
   });
 }

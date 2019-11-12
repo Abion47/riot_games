@@ -1,16 +1,15 @@
-import 'package:http/http.dart' as http;
-import 'package:riot_games/src/core/network.dart';
-
 import '../../../api_key_store.dart';
-import '../../../endpoint.dart';
+import '../../../core/endpoint.dart';
+import '../../../core/network.dart';
 import '../../model/champion_info.dart';
+import '../../typedefs.dart';
 import '../champion_v3.dart';
 
 Endpoint get _ChampionV3_getChampionRotations =>
     Endpoint('/lol/platform/v3/champion-rotations')..initialize();
 
 class ChampionV3Impl extends ChampionV3 {
-  final http.Client Function() clientGenerator;
+  final ClientGenerator clientGenerator;
   final ApiKeyStore apiKeyStore;
 
   ChampionV3Impl({
@@ -29,6 +28,7 @@ class ChampionV3Impl extends ChampionV3 {
     final client = clientGenerator();
     final response = await NetworkHandler.sendHttpRequest(
         client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
 
     if (response.code == 200) {
       return ChampionInfo.fromJson(response.body);

@@ -1,4 +1,6 @@
-const _hostName = "na1.api.riotgames.com";
+import '../../riot_games.dart';
+
+const _hostName = "api.riotgames.com";
 
 class Endpoint {
   static RegExp _valueFinder = RegExp(r'{(\w+)}');
@@ -20,8 +22,9 @@ class Endpoint {
     }
   }
 
-  Uri build([Map<String, String> queryParameters]) {
+  Uri build([Map<String, dynamic> queryParameters]) {
     var url = raw;
+
     for (var pair in _values.entries) {
       if (pair.value == null) {
         throw StateError(
@@ -30,6 +33,10 @@ class Endpoint {
       url = url.replaceAll('{${pair.key}}', pair.value);
     }
 
-    return Uri.https(_hostName, url, queryParameters);
+    final hostName = '${RiotApi.region}.$_hostName';
+
+    final params =
+        queryParameters?.map((key, value) => MapEntry(key, value.toString()));
+    return Uri.https(hostName, url, params);
   }
 }

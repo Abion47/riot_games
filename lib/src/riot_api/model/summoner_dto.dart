@@ -19,6 +19,9 @@ class SummonerDTO extends Equatable {
   final String name;
 
   /// Encrypted PUUID. Exact length of 78 characters.
+  ///
+  /// The summoner PUUID is globally unique to a player. Transferring a player to a
+  /// new region will not change the summoner PUUID.
   final String puuid;
 
   /// Summoner level associated with the summoner.
@@ -31,6 +34,9 @@ class SummonerDTO extends Equatable {
   final int revisionDate;
 
   /// Encrypted summoner ID. Max length 63 characters.
+  ///
+  /// The summoner ID is unique to a player based on the region. Transfering a
+  /// player to a new region will result in a new summoner ID.
   final String id;
 
   /// Encrypted account ID. Max length 56 characters.

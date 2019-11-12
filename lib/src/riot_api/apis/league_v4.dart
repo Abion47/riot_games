@@ -1,33 +1,31 @@
-import 'package:meta/meta.dart';
-
 import '../model/league_entry_dto.dart';
 import '../model/league_list_dto.dart';
 
 abstract class LeagueV4 {
-  Future<LeagueListDTO> getChallengerLeaguesByQueue({
-    @required String queue,
-  });
+  Future<LeagueListDTO> getChallengerLeaguesInQueue(
+    String queue,
+  );
 
-  Future<List<LeagueEntryDTO>> getEntriesBySummoner({
-    @required String encryptedSummonerId,
-  });
+  Future<Set<LeagueEntryDTO>> getEntriesForSummoner(
+    String encryptedSummonerId,
+  );
 
-  Future<List<LeagueEntryDTO>> getEntriesByQueueTierDivision({
-    @required String division,
-    @required String tier,
-    @required String queue,
+  Future<Set<LeagueEntryDTO>> getEntriesInQueueTierDivision(
+    String division,
+    String tier,
+    String queue, {
     int page = 1,
   });
 
-  Future<LeagueListDTO> getGrandmasterLeaguesByQueue({
-    @required String queue,
-  });
+  Future<LeagueListDTO> getGrandmasterLeaguesInQueue(
+    String queue,
+  );
 
-  Future<LeagueListDTO> getLeagueById({
-    @required String leagueId,
-  });
+  Future<LeagueListDTO> getLeagueById(
+    String leagueId,
+  );
 
-  Future<LeagueListDTO> getMasterLeaguesByQueue({
-    @required String queue,
-  });
+  Future<LeagueListDTO> getMasterLeaguesInQueue(
+    String queue,
+  );
 }

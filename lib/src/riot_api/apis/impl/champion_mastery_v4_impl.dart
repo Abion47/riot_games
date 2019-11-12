@@ -1,9 +1,8 @@
-import 'package:http/http.dart' as http;
-import 'package:riot_games/src/core/network.dart';
-
 import '../../../api_key_store.dart';
-import '../../../endpoint.dart';
+import '../../../core/endpoint.dart';
+import '../../../core/network.dart';
 import '../../model/champion_mastery_dto.dart';
+import '../../typedefs.dart';
 import '../champion_mastery_v4.dart';
 
 Endpoint get _ChampionMasteryV4_getChampionMasteriesFromSummonerId => Endpoint(
@@ -19,7 +18,7 @@ Endpoint get _ChampionMasteryV4_getChampionMasteryScoreFromSummonerId =>
       ..initialize();
 
 class ChampionMasteryV4Impl extends ChampionMasteryV4 {
-  final http.Client Function() clientGenerator;
+  final ClientGenerator clientGenerator;
   final ApiKeyStore apiKeyStore;
 
   ChampionMasteryV4Impl({
@@ -33,14 +32,15 @@ class ChampionMasteryV4Impl extends ChampionMasteryV4 {
   ) async {
     apiKeyStore.checkApiKey();
 
-    final endpoint = _ChampionMasteryV4_getChampionMasteriesFromSummonerId;
-    endpoint['encryptedSummonerId'] = encryptedSummonerId;
+    final endpoint = _ChampionMasteryV4_getChampionMasteriesFromSummonerId
+      ..['encryptedSummonerId'] = encryptedSummonerId;
 
     final url = endpoint.build();
 
     final client = clientGenerator();
     final response = await NetworkHandler.sendHttpRequest(
         client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
 
     if (response.code == 200) {
       return response.body
@@ -59,15 +59,16 @@ class ChampionMasteryV4Impl extends ChampionMasteryV4 {
     apiKeyStore.checkApiKey();
 
     final endpoint =
-        _ChampionMasteryV4_getChampionMasteriesFromSummonerAndChampionId;
-    endpoint['encryptedSummonerId'] = encryptedSummonerId;
-    endpoint['championId'] = championId;
+        _ChampionMasteryV4_getChampionMasteriesFromSummonerAndChampionId
+          ..['encryptedSummonerId'] = encryptedSummonerId
+          ..['championId'] = championId;
 
     final url = endpoint.build();
 
     final client = clientGenerator();
     final response = await NetworkHandler.sendHttpRequest(
         client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
 
     if (response.code == 200) {
       return ChampionMasteryDTO.fromJson(response.body);
@@ -82,14 +83,15 @@ class ChampionMasteryV4Impl extends ChampionMasteryV4 {
   ) async {
     apiKeyStore.checkApiKey();
 
-    final endpoint = _ChampionMasteryV4_getChampionMasteryScoreFromSummonerId;
-    endpoint['encryptedSummonerId'] = encryptedSummonerId;
+    final endpoint = _ChampionMasteryV4_getChampionMasteryScoreFromSummonerId
+      ..['encryptedSummonerId'] = encryptedSummonerId;
 
     final url = endpoint.build();
 
     final client = clientGenerator();
     final response = await NetworkHandler.sendHttpRequest(
         client, apiKeyStore.apiKey, url, 'GET');
+    client.close();
 
     if (response.code == 200) {
       return response.body as int;

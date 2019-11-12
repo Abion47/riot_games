@@ -1,4 +1,4 @@
-import '../endpoint.dart';
+import '../core/endpoint.dart';
 
 get LolStatusV3_getShardData =>
     Endpoint('https://{hostName}/lol/status/v3/shard-data')..initialize();

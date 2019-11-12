@@ -27,4 +27,4 @@ import 'dart:convert';
 //   return '${current.path.replaceAll('\\', '/')}/fixtures';
 // }
 
-String dataToJson(dynamic obj) => json.encode(obj);
+String dataToJson(dynamic data) => json.encode(data);
